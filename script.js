@@ -50,20 +50,22 @@ function initMap() {
   });
 
   map.addListener("click", function (answer) {
-    let Point = getUserAnswer(answer);
-    processAnswer(locations[questionNumber],Point)
-    questionNumber++;
-    showQuestion(questionNumber);
+    if (questionNumber < locations.length) {
+      let Point = getUserAnswer(answer);
+      processAnswer(locations[questionNumber], Point);
+      questionNumber++;
+      showQuestion(questionNumber);
+    }
   });
 }
 
 function processAnswer(location, point) {
   if (isInside(location, point)) {
     colorRectangle(location, true);
-    colorWord(location, true);
+    colorWord(questionNumber, true);
   } else if (!isInside(location, point)) {
     colorRectangle(location, false);
-    colorWord(location, false);
+    colorWord(questionNumber, false);
   } else console.log("erorrsrsr");
 }
 function getUserAnswer(answer) {
@@ -86,18 +88,15 @@ function isInside(box, point) {
   else return false;
 }
 
-function colorWord(location, isCorrect) {
-  var w = document.getElementsByClassName(location);
-  // if (isCorrect){
-  //   w.style.background = ColorCorrect;
-  // }
-  // else if(!isCorrect){
-  //   w.style.background = ColorWrong;
-  // }
-  // else
-  // console.log("errorrss");
-  console.log(location);
-  
+function colorWord(i, isCorrect) {
+  if (i < locations.length) {
+    var w = document.getElementById("q" + i);
+    if (isCorrect) {
+      w.style.background = ColorCorrect;
+    } else if (!isCorrect) {
+      w.style.background = ColorWrong;
+    } else console.log("errorrss");
+  }
 }
 function colorRectangle(location, isCorrect) {
   if (isCorrect) {
