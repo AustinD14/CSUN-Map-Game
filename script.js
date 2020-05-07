@@ -1,9 +1,3 @@
-var map;
-var questionNumber = 1;
-const ColorCorrect = "#00FF00";
-const ColorWrong = "#FF0000";
-const MAXQUESTIONS = 5;
-
 const locations = [
   null,
   (OviattLibrary = [34.240408, 34.239488, -118.528616, -118.530045]),
@@ -12,6 +6,13 @@ const locations = [
   (UniversityStudentUnion = [34.240909, 34.239189, -118.524686, -118.527266]),
   (Matadome = [34.24261, 34.241226, -118.525333, -118.527033]),
 ];
+
+var map;
+var questionNumber = 1;
+var correctAnswers = 0;
+const ColorCorrect = "#00FF00";
+const ColorWrong = "#FF0000";
+const MAXQUESTIONS = locations.length - 1;
 
 function initMap() {
   showQuestion(questionNumber);
@@ -50,22 +51,36 @@ function initMap() {
   });
 
   map.addListener("click", function (answer) {
+    if (!timerIsOn) startTimer();
+
     if (questionNumber < locations.length) {
       let Point = getUserAnswer(answer);
       processAnswer(locations[questionNumber], Point);
+
       questionNumber++;
       showQuestion(questionNumber);
+    }
+    if (questionNumber == locations.length) {
+      showScore();
+      clearInterval(timer);
     }
   });
 }
 
+function showScore() {
+  s = document.getElementById("score");
+  s.innerHTML = " You Got " + correctAnswers + " Out of " + MAXQUESTIONS;
+}
 function processAnswer(location, point) {
   if (isInside(location, point)) {
     colorRectangle(location, true);
     colorWord(questionNumber, true);
+    wordPrompt(questionNumber, true);
+    correctAnswers++;
   } else if (!isInside(location, point)) {
     colorRectangle(location, false);
     colorWord(questionNumber, false);
+    wordPrompt(questionNumber, false);
   } else console.log("erorrsrsr");
 }
 function getUserAnswer(answer) {
@@ -88,9 +103,17 @@ function isInside(box, point) {
   else return false;
 }
 
+function wordPrompt(i, isCorrect) {
+  var w = document.getElementById("a" + i);
+  if (isCorrect) {
+    w.innerHTML = "CORRECT!";
+  } else if (!isCorrect) {
+    w.innerHTML = "WRONG!";
+  }
+}
 function colorWord(i, isCorrect) {
   if (i < locations.length) {
-    var w = document.getElementById("q" + i);
+    var w = document.getElementById("a" + i);
     if (isCorrect) {
       w.style.background = ColorCorrect;
     } else if (!isCorrect) {
@@ -130,6 +153,38 @@ function colorRectangle(location, isCorrect) {
       },
     });
   }
+}
+
+/////TIMER FUNCTIONS
+var min = 0,
+  sec = 0,
+  hun = 0,
+  timer = 0;
+var timerIsOn = false;
+const theTimer = document.querySelector(".timer");
+
+function leadingNum() {
+  if (hun < 10) hun = "0" + hun;
+  if (sec < 10) sec = "0" + sec;
+  if (min < 10) min = "0" + min;
+}
+
+function add() {
+  hun++;
+  if (hun == 100) {
+    hun = 0;
+    sec++;
+    if (sec == 60) {
+      sec = 0;
+      min++;
+    }
+  }
+  theTimer.innerHTML = min + ":" + sec + ":" + hun;
+}
+
+function startTimer() {
+  timerIsOn = true;
+  timer = setInterval(add, 10);
 }
 
 window.onload = initMap;

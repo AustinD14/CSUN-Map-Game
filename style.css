@@ -72,9 +72,12 @@ header h1 {
 .content {
     padding-top: 100px;
     height: auto;
-    width: 70%;
+    width: 75%;
     display: flex;
     margin: auto;
+}
+.question-wrapper {
+  padding-right: 5px;
 }
 
 .questions {
@@ -87,4 +90,23 @@ header h1 {
 #q4,
 #q5{
   display: none;
+}
+
+.questions h3 {
+  margin-bottom: 5px!important;
+}
+
+.questions h4{
+  margin-top: 5px!important;
+}
+
+#score {
+  font-size: larger;
+  font-weight: 500;
+}
+
+
+.timer {
+  padding-top: 5px;
+  font-size: 35px;
 }
