@@ -1,13 +1,20 @@
 var map;
-
+var questionNumber = 1;
 const ColorCorrect = "#00FF00";
 const ColorWrong = "#FF0000";
+const MAXQUESTIONS = 5;
 
-//Locations
-//North South East West -- Boundaries
-const OviattLibrary = [34.240408, 34.239488, -118.528616, -118.530045];
+const locations = [
+  null,
+  (OviattLibrary = [34.240408, 34.239488, -118.528616, -118.530045]),
+  (MatadorSquare = [34.239715, 34.239194, -118.527433, -118.528149]),
+  (OrangeGrove = [34.237302, 34.235545, -118.524704, -118.527302]),
+  (UniversityStudentUnion = [34.240909, 34.239189, -118.524686, -118.527266]),
+  (Matadome = [34.24261, 34.241226, -118.525333, -118.527033]),
+];
 
 function initMap() {
+  showQuestion(questionNumber);
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 34.239171, lng: -118.527593 },
     zoom: 17,
@@ -42,44 +49,32 @@ function initMap() {
     ],
   });
 
-  //FOR DEBUGGING PURPOSES -- DELETE LATER
-  // colorRectangle(
-  //   OviattLibrary,
-  //   map.addListener("click", function (e) {
-  //     if (isInside(OviattLibrary, e)) console.log("broooo");
-  //     else if (!isInside(OviattLibrary, e)) console.log("wtfff");
-  //     else console.log("errorr brooo");
-  //   })
-  // );
-
-  let lat;
-  let lng;
-  map.addListener("click", function (point) {
-    // console.log(e.latLng.lat());
-    
-    lat = point.latLng.lat();
-    lng = point.latLng.lng();
-    let Point = [lat, lng];
-
-    if (isInside(OviattLibrary, Point)) console.log("brooo");
-    else if (!isInside(OviattLibrary, Point)) console.log("wtfff");
-    else console.log("erorrsrsr");
+  map.addListener("click", function (answer) {
+    let Point = getUserAnswer(answer);
+    processAnswer(locations[questionNumber],Point)
+    questionNumber++;
+    showQuestion(questionNumber);
   });
-
 }
 
-// function isInside(box, point) {
-//   if (
-//     point.latLng.lat() <= box[0] &&
-//     point.latLng.lat() >= box[1] &&
-//     point.latLng.lng() <= box[2] &&
-//     point.latLng.lng() >= box[3]
-//   )
-//     return true;
-//   else return false;
-// }
-
-
+function processAnswer(location, point) {
+  if (isInside(location, point)) {
+    colorRectangle(location, true);
+    colorWord(location, true);
+  } else if (!isInside(location, point)) {
+    colorRectangle(location, false);
+    colorWord(location, false);
+  } else console.log("erorrsrsr");
+}
+function getUserAnswer(answer) {
+  return [answer.latLng.lat(), answer.latLng.lng()];
+}
+function showQuestion(i) {
+  if (i < locations.length) {
+    var q = document.getElementById("q" + i);
+    q.style.display = "block";
+  }
+}
 function isInside(box, point) {
   if (
     point[0] <= box[0] &&
@@ -89,6 +84,20 @@ function isInside(box, point) {
   )
     return true;
   else return false;
+}
+
+function colorWord(location, isCorrect) {
+  var w = document.getElementsByClassName(location);
+  // if (isCorrect){
+  //   w.style.background = ColorCorrect;
+  // }
+  // else if(!isCorrect){
+  //   w.style.background = ColorWrong;
+  // }
+  // else
+  // console.log("errorrss");
+  console.log(location);
+  
 }
 function colorRectangle(location, isCorrect) {
   if (isCorrect) {

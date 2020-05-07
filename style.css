@@ -80,3 +80,11 @@ header h1 {
 .questions {
     text-align: center;
 }
+
+#q1,
+#q2,
+#q3,
+#q4,
+#q5{
+  display: none;
+}
