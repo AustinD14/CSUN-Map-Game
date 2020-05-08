@@ -50,7 +50,7 @@ function initMap() {
     ],
   });
 
-  map.addListener("click", function (answer) {
+  map.addListener("dblclick", function (answer) {
     if (!timerIsOn) startTimer();
 
     if (questionNumber < locations.length) {
